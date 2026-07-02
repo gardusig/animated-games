@@ -1,4 +1,4 @@
-const API_BASE = import.meta.env.VITE_POKEMON_API || '/api/pokemon'
+const API_BASE = import.meta.env.VITE_API_URL || '/api'
 
 export async function fetchSpecies({ page, firstDex, limit = 24, search = '' } = {}) {
   const params = new URLSearchParams({ limit: String(limit) })
