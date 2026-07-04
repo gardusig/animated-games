@@ -1,0 +1,8 @@
+code,title,description,completed
+POKEDEX_FIRST_10,First 10 registered,Register 10 species in the global pokedex.,false
+SHINY_FOUND,Shiny hunter,Register a shiny species.,true
+GYM_GEN1_BROCK,Brock's badge,Beat the Gen 1 rock gym house.,false
+GYM_GEN2_FALKNER,Falkner's badge,Beat the Gen 2 flying gym house.,false
+VISIT_GRASS_ROUTE,Grass wanderer,Walk through tall grass encounter zone.,false
+VISIT_LAKE,Lake explorer,Discover the water-type lake route.,false
+VISIT_CAVE,Cave delver,Enter the rock-type cave route.,false
