@@ -14,7 +14,7 @@ permissions:
 
 jobs:
   pipeline:
-    uses: gardusig/github-pipelines/.github/workflows/pull-request.yml@main
+    uses: gardusig/yaml/.github/workflows/lib/pull-request-router.yml@main
     with:
       repo_slug: animated-games
       repository: gardusig/animated-games

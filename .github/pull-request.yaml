@@ -1,5 +1,4 @@
 repo: gardusig/animated-games
-dockerfile: docker/animated-games.dockerfile
 jobs:
 - id: lint
   name: Repo lint
