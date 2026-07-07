@@ -23,8 +23,8 @@ All games in this monorepo follow the same storage rules:
 ## Validation
 
 ```bash
-python games/yugioh/scripts/src/validate_catalog.py
-python games/pokemon/scripts/src/validate_catalog.py
+python src/games/yugioh/CLI commands / src/validate_catalog.py
+python src/games/pokemon/CLI commands / src/validate_catalog.py
 ```
 
 ## Size targets

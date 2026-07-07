@@ -1,0 +1,10 @@
+# Required catalog manifest — seed fails if counts drift (see CLI commands / src/validate_catalog.py)
+version: 1
+source: pokeapi
+species:
+  file: pokemon_species.csv
+  min_rows: 1351
+  id_column: national_dex_id
+images:
+  strategy: url_only  # never commit binary sprites
+  fill_script: CLI commands / src/fetch_pokemon_catalog.py --fill-images
