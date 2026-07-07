@@ -4,14 +4,14 @@ Consolidation into `2d-games` — verify per game folder, not per legacy repo na
 
 ## Interactive games
 
-- [ ] `games/yugioh/` — backend, frontend, data, migrations, scripts, docs
-- [ ] `games/pokemon/` — same
+- [ ] `src/games/yugioh/` — backend, frontend, data, migrations, scripts, docs
+- [ ] `src/games/pokemon/` — same
 - [ ] Launcher routes `/play/yugioh`, `/play/pokemon`
 - [ ] `docker compose up` — both APIs healthy
 
 ## Static puzzles
 
-- [ ] `games/static-puzzles/` — goals, manifest, stub launcher route
+- [ ] `src/games/static-puzzles/` — goals, manifest, stub launcher route
 - [ ] No interactive-game docs copied here — separate category
 
 ## CI

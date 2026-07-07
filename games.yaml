@@ -13,7 +13,7 @@ games:
     description: TCG card catalog and decks — strategy and collection, player-facing competition.
     frontend_route: /play/yugioh
     api_prefix: /api/yugioh
-    data_dir: games/yugioh/data
+    data_dir: src/games/yugioh/data
     tags: [tcg, multiplayer, collection]
 
   pokemon:
@@ -23,7 +23,7 @@ games:
     description: Dex, team, gyms — skill challenges and progression with other trainers in mind.
     frontend_route: /play/pokemon
     api_prefix: /api/pokemon
-    data_dir: games/pokemon/data
+    data_dir: src/games/pokemon/data
     tags: [rpg, team, interaction]
 
   naruto:
