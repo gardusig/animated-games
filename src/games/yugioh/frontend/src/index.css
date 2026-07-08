@@ -1,6 +1,30 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@theme {
+  --color-yugioh-dark: #0a0e27;
+  --color-yugioh-purple: #2d1b4e;
+  --color-yugioh-blue: #1a237e;
+  --color-yugioh-accent: #ffd700;
+  --color-yugioh-gold: #ffd700;
+  --color-yugioh-red: #c62828;
+  --color-yugioh-green: #2e7d32;
+  --color-yugioh-pink: #c2185b;
+
+  --background-image-yugioh-gradient: linear-gradient(
+    135deg,
+    #0a0e27 0%,
+    #1a237e 50%,
+    #2d1b4e 100%
+  );
+  --background-image-card-glow: radial-gradient(
+    circle,
+    rgba(255, 215, 0, 0.3) 0%,
+    transparent 70%
+  );
+
+  --shadow-yugioh-glow: 0 0 20px rgba(255, 215, 0, 0.5), 0 0 40px rgba(255, 215, 0, 0.3);
+  --shadow-card-glow: 0 0 15px rgba(255, 215, 0, 0.4);
+}
 
 @layer base {
   body {
@@ -14,7 +38,7 @@
     transform-style: preserve-3d;
     transition: transform 0.3s ease;
   }
-  
+
   .card-3d:hover {
     transform: rotateY(5deg) rotateX(5deg) translateZ(20px);
   }
@@ -27,4 +51,3 @@
     text-shadow: 0 0 10px rgba(255, 215, 0, 0.8), 0 0 20px rgba(255, 215, 0, 0.5);
   }
 }
-
