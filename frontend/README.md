@@ -1,3 +1,3 @@
 # animated-games-frontend
 
-WASM game UI — compiled from Rust to WebAssembly.
+React + TypeScript game launcher (Vite). Provides a game picker and loads the corresponding WASM game engine crate.

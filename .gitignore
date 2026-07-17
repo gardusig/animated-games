@@ -4,8 +4,11 @@ backend/server
 *.exe~
 
 # Rust / WASM
-frontend/target/
-frontend/pkg/
+wasm/target/
+wasm/**/target/
+frontend/public/wasm/
+frontend/dist/
+**/pkg/
 
 # IDE
 .idea/

@@ -1,0 +1,12 @@
+games:
+  - id: pokemon
+    name: "Pokémon"
+    wasm: wasm-pokemon
+    fps: 60
+    description: "WASM-powered Pokémon battle simulation"
+
+  - id: yugioh
+    name: "Yu-Gi-Oh!"
+    wasm: wasm-yugioh
+    fps: 60
+    description: "High-speed duel animations driven by the Rust WASM engine"
