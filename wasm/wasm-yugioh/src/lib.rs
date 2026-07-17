@@ -1,15 +1,15 @@
+mod duel;
+
+use duel::Duel;
 use std::cell::RefCell;
 use wasm_bindgen::prelude::*;
 use web_sys::{CanvasRenderingContext2d, HtmlCanvasElement};
 
 thread_local! {
+    static DUEL: RefCell<Option<Duel>> = RefCell::new(None);
     static CTX: RefCell<Option<CanvasRenderingContext2d>> = RefCell::new(None);
     static WIDTH: RefCell<f64> = RefCell::new(800.0);
     static HEIGHT: RefCell<f64> = RefCell::new(600.0);
-    static TIME: RefCell<f64> = RefCell::new(0.0);
-    static CX: RefCell<f64> = RefCell::new(400.0);
-    static CY: RefCell<f64> = RefCell::new(300.0);
-    static ROTATION: RefCell<f64> = RefCell::new(0.0);
 }
 
 #[wasm_bindgen]
@@ -28,66 +28,35 @@ pub fn init(canvas_id: &str) {
         .unwrap();
 
     CTX.with(|c| *c.borrow_mut() = Some(ctx));
-    TIME.with(|t| *t.borrow_mut() = 0.0);
-    CX.with(|x| *x.borrow_mut() = 400.0);
-    CY.with(|y| *y.borrow_mut() = 300.0);
-    ROTATION.with(|r| *r.borrow_mut() = 0.0);
+    DUEL.with(|d| *d.borrow_mut() = Some(Duel::new()));
 }
 
 #[wasm_bindgen]
 pub fn tick(dt: f64) {
-    TIME.with(|t| {
-        let mut time = t.borrow_mut();
-        *time += dt;
-
-        ROTATION.with(|r| *r.borrow_mut() = (*time * 90.0).sin() * 0.3);
-        CX.with(|x| *x.borrow_mut() = 400.0 + (*time * 30.0).sin() * 100.0);
+    DUEL.with(|d| {
+        if let Some(ref mut duel) = *d.borrow_mut() {
+            duel.tick(dt);
+        }
     });
 }
 
 #[wasm_bindgen]
-pub fn render(fps: f64) {
+pub fn render() {
     CTX.with(|ctx| {
         let ctx = match ctx.borrow().as_ref() {
             Some(c) => c.clone(),
             None => return,
         };
-
         let w = WIDTH.with(|w| *w.borrow());
         let h = HEIGHT.with(|h| *h.borrow());
 
         ctx.clear_rect(0.0, 0.0, w, h);
 
-        ctx.set_fill_style(&JsValue::from_str("#0a0a0f"));
-        ctx.fill_rect(0.0, 0.0, w, h);
-
-        let (cx, cy, rot, sec) = CX.with(|x| {
-            CY.with(|y| ROTATION.with(|r| TIME.with(|t| (*x.borrow(), *y.borrow(), *r.borrow(), *t.borrow()))))
+        DUEL.with(|d| {
+            if let Some(ref duel) = *d.borrow() {
+                duel.draw(&ctx, w, h);
+            }
         });
-
-        ctx.save();
-
-        ctx.translate(cx, cy).unwrap();
-        ctx.rotate(rot).unwrap();
-
-        ctx.set_fill_style(&JsValue::from_str("#44aaff"));
-        ctx.fill_rect(-50.0, -35.0, 100.0, 70.0);
-
-        ctx.set_stroke_style(&JsValue::from_str("#88ccff"));
-        ctx.set_line_width(2.0);
-        ctx.stroke_rect(-50.0, -35.0, 100.0, 70.0);
-
-        ctx.set_fill_style(&JsValue::from_str("#fff"));
-        ctx.set_font("12px monospace");
-        ctx.set_text_align("center");
-        let _ = ctx.fill_text("Yu-Gi-Oh!", 0.0, 5.0);
-
-        ctx.restore();
-
-        ctx.set_text_align("start");
-        ctx.set_font("14px monospace");
-        ctx.set_fill_style(&JsValue::from_str("#888"));
-        let _ = ctx.fill_text(&format!("Yu-Gi-Oh!  |  {:.0} FPS", fps), 12.0, 24.0);
     });
 }
 
@@ -95,4 +64,23 @@ pub fn render(fps: f64) {
 pub fn resize(width: f64, height: f64) {
     WIDTH.with(|w| *w.borrow_mut() = width);
     HEIGHT.with(|h| *h.borrow_mut() = height);
+}
+
+#[wasm_bindgen]
+pub fn select_action(index: usize) {
+    DUEL.with(|d| {
+        if let Some(ref mut duel) = *d.borrow_mut() {
+            duel.select_action(index);
+        }
+    });
+}
+
+#[wasm_bindgen]
+pub fn get_state() -> String {
+    DUEL.with(|d| {
+        match *d.borrow() {
+            Some(ref duel) => duel.state_json(),
+            None => r#"{"phase":"loading"}"#.to_string(),
+        }
+    })
 }

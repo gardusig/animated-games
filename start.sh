@@ -2,11 +2,13 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")" && pwd)"
+OUT="$ROOT/frontend/public/wasm"
 
 echo "Building WASM crates..."
 for crate in wasm-pokemon wasm-yugioh; do
-  echo "  wasm-pack build wasm/$crate ..."
-  (cd "$ROOT/wasm/$crate" && wasm-pack build --target web --out-dir "$ROOT/frontend/public/wasm/$crate")
+  id="${crate#wasm-}"
+  echo "  wasm-pack build wasm/$crate --out-dir $OUT/$id"
+  (cd "$ROOT/wasm/$crate" && wasm-pack build --target web --out-dir "$OUT/$id")
 done
 
 echo ""

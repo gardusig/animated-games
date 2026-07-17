@@ -3,10 +3,10 @@ games:
     name: "Pokémon"
     wasm: wasm-pokemon
     fps: 60
-    description: "WASM-powered Pokémon battle simulation"
+    description: "Turn-based battle — Pikachu vs Charmander with WASM rendering"
 
   - id: yugioh
     name: "Yu-Gi-Oh!"
     wasm: wasm-yugioh
     fps: 60
-    description: "High-speed duel animations driven by the Rust WASM engine"
+    description: "Card duel — Dark Magician vs Blue-Eyes White Dragon"
