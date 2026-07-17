@@ -1,11 +1,14 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+ROOT="$(cd "$(dirname "$0")" && pwd)"
+
 echo "Building WASM crates..."
-cd "$(dirname "$0")/wasm"
-for dir in wasm-pokemon wasm-yugioh; do
-  (cd "$dir" && wasm-pack build --target web --out-dir "../frontend/public/wasm/$dir")
+for crate in wasm-pokemon wasm-yugioh; do
+  echo "  wasm-pack build wasm/$crate ..."
+  (cd "$ROOT/wasm/$crate" && wasm-pack build --target web --out-dir "$ROOT/frontend/public/wasm/$crate")
 done
 
-echo "Starting services..."
+echo ""
+echo "Starting Docker services..."
 docker compose up --build

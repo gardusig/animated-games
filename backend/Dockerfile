@@ -1,9 +1,12 @@
-FROM golang:1.22-alpine AS build
+FROM rust:1.80-slim-bookworm AS build
 WORKDIR /src
-COPY go.mod main.go ./
-RUN CGO_ENABLED=0 go build -o /server .
+COPY Cargo.toml Cargo.lock* ./
+RUN mkdir src && echo "fn main() {}" > src/main.rs
+RUN cargo build --release 2>/dev/null || true
+COPY src/ src/
+RUN cargo build --release
 
-FROM alpine:3.20
-COPY --from=build /server /server
+FROM debian:bookworm-slim
+COPY --from=build /src/target/release/animated-games-backend /server
 EXPOSE 8080
 CMD ["/server"]

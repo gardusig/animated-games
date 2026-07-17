@@ -2,9 +2,9 @@ import { useEffect, useRef } from 'react'
 import type { Game } from './games'
 
 interface WasmExports {
-  init: () => void
+  init: (canvasId: string) => void
   tick: (dt: number) => void
-  get_state: () => string
+  render: (fps: number) => void
   resize: (width: number, height: number) => void
 }
 
@@ -14,25 +14,20 @@ interface RuntimeProps {
 }
 
 export default function Runtime({ game, onBack }: RuntimeProps) {
-  const canvasRef = useRef<HTMLCanvasElement>(null)
   const wasmRef = useRef<WasmExports | null>(null)
   const rafRef = useRef<number>(0)
   const lastTimeRef = useRef<number>(0)
+  const fpsRef = useRef<number>(60)
+  const frameCountRef = useRef<number>(0)
+  const fpsTimeRef = useRef<number>(0)
 
   useEffect(() => {
-    let cancelled = false
-
     async function boot() {
       try {
         const mod = await import(`/wasm/${game.id}.wasm`)
         const exports = await mod.default() as WasmExports
         wasmRef.current = exports
-        exports.init()
-
-        if (canvasRef.current) {
-          const dpr = devicePixelRatio
-          exports.resize(canvasRef.current.width * dpr, canvasRef.current.height * dpr)
-        }
+        exports.init('game-canvas')
       } catch (err) {
         console.error('WASM boot failed:', err)
       }
@@ -41,16 +36,13 @@ export default function Runtime({ game, onBack }: RuntimeProps) {
     boot()
 
     return () => {
-      cancelled = true
       cancelAnimationFrame(rafRef.current)
     }
   }, [game])
 
   useEffect(() => {
-    const canvas = canvasRef.current
+    const canvas = document.getElementById('game-canvas') as HTMLCanvasElement | null
     if (!canvas) return
-    const ctx = canvas.getContext('2d')
-    if (!ctx) return
 
     function resize() {
       const dpr = devicePixelRatio
@@ -63,42 +55,26 @@ export default function Runtime({ game, onBack }: RuntimeProps) {
 
     resize()
     window.addEventListener('resize', resize)
+    lastTimeRef.current = 0
+    frameCountRef.current = 0
+    fpsTimeRef.current = 0
 
     function loop(time: number) {
-      const dt = lastTimeRef.current
-        ? Math.min((time - lastTimeRef.current) / 1000, 1 / 30)
-        : 1 / 60
+      if (!lastTimeRef.current) lastTimeRef.current = time
+      const dt = Math.min((time - lastTimeRef.current) / 1000, 1 / 30)
       lastTimeRef.current = time
+
+      frameCountRef.current++
+      if (time - fpsTimeRef.current >= 1000) {
+        fpsRef.current = frameCountRef.current
+        frameCountRef.current = 0
+        fpsTimeRef.current = time
+      }
 
       const wasm = wasmRef.current
       if (wasm) {
         wasm.tick(dt)
-        const raw = wasm.get_state()
-        const state = JSON.parse(raw) as Record<string, number>
-
-        const dpr = devicePixelRatio
-        ctx.clearRect(0, 0, canvas.width, canvas.height)
-        ctx.fillStyle = '#0a0a0f'
-        ctx.fillRect(0, 0, canvas.width, canvas.height)
-
-        ctx.fillStyle = '#e0e0e0'
-        ctx.font = `${16 * dpr}px monospace`
-        ctx.fillText(`${game.name} — ${(1 / dt).toFixed(0)} FPS`, 16 * dpr, 24 * dpr)
-
-        if (state.x !== undefined && state.y !== undefined) {
-          ctx.beginPath()
-          ctx.arc(state.x * dpr, state.y * dpr, 20 * dpr, 0, Math.PI * 2)
-          ctx.fillStyle = '#ff4444'
-          ctx.fill()
-        }
-        if (state.rotation !== undefined) {
-          ctx.save()
-          ctx.translate(state.x * dpr, state.y * dpr)
-          ctx.rotate(state.rotation)
-          ctx.fillStyle = '#44aaff'
-          ctx.fillRect(-30 * dpr, -20 * dpr, 60 * dpr, 40 * dpr)
-          ctx.restore()
-        }
+        wasm.render(fpsRef.current)
       }
 
       rafRef.current = requestAnimationFrame(loop)
@@ -110,12 +86,12 @@ export default function Runtime({ game, onBack }: RuntimeProps) {
       window.removeEventListener('resize', resize)
       cancelAnimationFrame(rafRef.current)
     }
-  }, [game])
+  }, [])
 
   return (
     <div style={{ position: 'relative', width: '100%', height: '100%' }}>
       <canvas
-        ref={canvasRef}
+        id="game-canvas"
         style={{ display: 'block', width: '100%', height: '100%' }}
       />
       <button

@@ -1,5 +1,5 @@
 services:
-  backend:
+  catalog:
     build:
       context: ./backend
       dockerfile: Dockerfile
@@ -15,6 +15,6 @@ services:
     ports:
       - "3000:80"
     depends_on:
-      - backend
+      - catalog
     environment:
       - VITE_API_URL=http://localhost:8080

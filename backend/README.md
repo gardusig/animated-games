@@ -1,3 +1,3 @@
 # animated-games-backend
 
-Go catalog API and game services.
+Rust (Axum) catalog API and game services — microservice deployed via Docker.
