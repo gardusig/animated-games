@@ -1,0 +1,12 @@
+games:
+  - id: pokemon
+    name: "Pokémon"
+    wasm: wasm-pokemon
+    fps: 60
+    description: "Turn-based battle — Pikachu vs Charmander with WASM rendering"
+
+  - id: yugioh
+    name: "Yu-Gi-Oh!"
+    wasm: wasm-yugioh
+    fps: 60
+    description: "Card duel — Dark Magician vs Blue-Eyes White Dragon"

@@ -1,0 +1,21 @@
+# Go
+backend/server
+*.exe
+*.exe~
+
+# Rust / WASM
+wasm/target/
+wasm/**/target/
+frontend/public/wasm/
+frontend/dist/
+**/pkg/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db

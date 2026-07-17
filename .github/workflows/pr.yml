@@ -1,0 +1,33 @@
+name: PR
+
+on: pull_request
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          target: wasm32-unknown-unknown
+
+      - name: Check backend
+        run: cargo check
+        working-directory: backend
+
+      - name: Check WASM crates
+        run: |
+          for crate in wasm-pokemon wasm-yugioh; do
+            cargo check --target wasm32-unknown-unknown --manifest-path wasm/$crate/Cargo.toml
+          done
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Check frontend
+        run: |
+          npm install
+          npx tsc --noEmit
+        working-directory: frontend
