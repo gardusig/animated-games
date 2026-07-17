@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-ROOT="$(cd "$(dirname "$0")" && pwd)"
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 OUT="$ROOT/frontend/public/wasm"
 
 echo "Building WASM crates..."
@@ -13,4 +13,4 @@ done
 
 echo ""
 echo "Starting Docker services..."
-docker compose up --build
+docker compose -f "$ROOT/docker-compose.yml" up --build
